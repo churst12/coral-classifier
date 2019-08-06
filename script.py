@@ -31,8 +31,6 @@ def download_pics():
                     name +=1
 
 
-
-
 download_pics()
 
 
