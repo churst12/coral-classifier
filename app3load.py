@@ -7,17 +7,19 @@ from keras import backend as k
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 from keras.models import load_model
 from keras.preprocessing import image
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import os
 
 img_width, img_height = 256, 256
 train_data_dir = "photos/test1"
 validation_data_dir = "photos/test1val"
+classes = ('Agaricia agaricites', 'Agaricia humilis', 'Agaraicia lamarcki', 'Colpophyllia natans', 'Eusmilia fastigiata', 'Madracis aurentenra', 'Madracis decactis')
 nb_train_samples = 185
 nb_validation_samples = 56
 batch_size = 16
 epochs = 50
+plotpath = 'results_8_16'
 
 def create_model():
 	model = applications.VGG19(weights = "imagenet", include_top=False, input_shape = (img_width, img_height, 3))
@@ -64,23 +66,50 @@ def imgaccuracy(imgpath):
 	return pred
 
 def print_results(directorystr):
-	dsflag = True
 	
 	directory = os.fsencode(directorystr)
 	for folder in os.listdir(directory):
-
-		print("folder" + str(folder.decode("utf-8")))
-		directory2 = os.fsencode(directorystr+'/'+str(folder.decode("utf-8")))
-		if dsflag: dsflag = False
+		species = str(folder.decode("utf-8"))
+		print("species: " + species)
+		directory2 = os.fsencode(directorystr+'/'+ species)
+		if folder.decode("utf-8") == ".DS_Store": continue
 		else:
+			imgcounter = 0
+			confidencelist = [0]*len(classes)
+			
 			for file in os.listdir(directory2):
 				if file.decode("utf-8") == ".DS_Store": continue
 				else:
-					prediction = imgaccuracy(directorystr+"/"+folder.decode("utf-8")+"/"+file.decode("utf-8"))
-					print(folder.decode("utf-8") + file.decode("utf-8"))
-					print(prediction)
-				
+					prediction = imgaccuracy(directorystr+"/"+ species +"/"+file.decode("utf-8"))
+					for i in range(len(prediction)):
+						confidencelist[i] += prediction[i]
 
+					print(species + file.decode("utf-8"))
+					print(prediction)
+					imgcounter += 1
+			for i in range(len(confidencelist)):
+				confidencelist[i] = confidencelist[i]/imgcounter
+			confidencelist = confidencelist[0].tolist()
+			plot(species, confidencelist)
+				
+def plot(name, confidence):
+	y_pos = np.arange(len(classes))
+
+	print(str(y_pos))
+	print("CONFIDENCE: "+ str(confidence))
+	plt.ylim(top=1)
+	plt.bar(y_pos, confidence, align='center', alpha=0.5)
+	plt.xticks(y_pos, classes, rotation=30, ha="right")
+	plt.margins(.2)
+
+	plt.ylabel('confidence')
+	plt.title(name)
+
+	if not os.path.exists(plotpath):
+		os.makedirs(plotpath)
+
+	plt.savefig(plotpath + '/'+name, bbox_inches='tight')
+	plt.close()
 
 
 
