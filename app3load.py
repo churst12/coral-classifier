@@ -10,16 +10,12 @@ from keras.preprocessing import image
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import os
-
+#https://medium.com/@14prakash/transfer-learning-using-keras-d804b2e04ef8
 img_width, img_height = 256, 256
-train_data_dir = "photos/test1"
-validation_data_dir = "photos/test1val"
-classes = ('Agaricia agaricites', 'Agaricia humilis', 'Agaraicia lamarcki', 'Colpophyllia natans', 'Eusmilia fastigiata', 'Madracis aurentenra', 'Madracis decactis')
-nb_train_samples = 185
-nb_validation_samples = 56
-batch_size = 16
-epochs = 50
-plotpath = 'results_8_16'
+validation_datapath = "/Users/collin.hurst/Documents/coral/photos/test2val"
+classes = ('Agaricia agaricites', 'Agaricia humilis', 'Agaraicia lamarcki', 'Colpophyllia natans', 'Eusmilia fastigiata', 'Madracis aurentenra', 'Madracis decactis', 'Madracis pharensis', 'Madracis senaria', 'Orbicella annularis', 'Orbicella faveolata', 'Orbicella franksi')
+modelpath = '8_8_vgg.h5'
+plotpath = 'results_8_7'
 
 def create_model():
 	model = applications.VGG19(weights = "imagenet", include_top=False, input_shape = (img_width, img_height, 3))
@@ -34,7 +30,7 @@ def create_model():
 	x = Dense(1024, activation="relu")(x)
 	x = Dropout(0.5)(x)
 	x = Dense(1024, activation="relu")(x)
-	predictions = Dense(7, activation="softmax")(x)
+	predictions = Dense(len(classes), activation="softmax")(x)
 
 	# creating the final model 
 	model_final = Model(input = model.input, output = predictions)
@@ -60,7 +56,7 @@ def load_image(img_path, show=False):
 
     return img_tensor
 def imgaccuracy(imgpath):
-	model = load_weights('vgg16_1.h5')
+	model = load_weights(modelpath)
 	newimg = load_image(imgpath)
 	pred = model.predict(newimg)
 	return pred
@@ -113,7 +109,7 @@ def plot(name, confidence):
 
 
 
-print_results('/Users/collin.hurst/Documents/coral/photos/test1val')
+print_results(validation_datapath)
 
 
 
