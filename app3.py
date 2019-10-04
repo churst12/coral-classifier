@@ -9,6 +9,7 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard,
 img_width, img_height = 256, 256
 train_data_dir = "photos/test1"
 validation_data_dir = "photos/test1val"
+model_name = "vgg16_1.h5"
 nb_train_samples = 185
 nb_validation_samples = 56
 batch_size = 16
@@ -65,7 +66,7 @@ target_size = (img_height, img_width),
 class_mode = "categorical")
 
 # Save the model according to the conditions  
-checkpoint = ModelCheckpoint("vgg16_1.h5", monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
+checkpoint = ModelCheckpoint(model_name, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
 early = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, verbose=1, mode='auto')
 
 
