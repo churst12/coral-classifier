@@ -30,6 +30,10 @@ This file is used to test the trained model. It requires you to have validation 
 This file is used to download the observations from a csv retrieved from iNaturalist. 
 The input csv must be from iNaturalist since it reads and downloads based on the iNaturalist csv format.
 
+### organize_files.py
+
+This file is used to convert the species folders to genus/species folders.
+
 ### results
 
 This folder is the output for app3load.py
