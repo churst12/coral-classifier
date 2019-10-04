@@ -8,7 +8,7 @@ file = 'observations-60352.csv'
 
 
 def download_pics():
-        with open(file) as csv_file:
+        with open("./observations/" %file) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             line_count = 0
             name = 0
